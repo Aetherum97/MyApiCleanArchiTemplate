@@ -29,45 +29,30 @@ namespace MyApiTemplateCleanArchi.Web.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel model)
         {
-            try
+            var user = _context.Users.SingleOrDefault(u => u.Username == model.Username);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
             {
-                var user = _context.Users.SingleOrDefault(u => u.Username == model.Username);
-                if (user == null)
-                {
-                    return Unauthorized("Identifiants invalides");
-                }
-
-                var token = _tokenService.GenerateToken(user);
-                return Ok(new { token });
+                return Unauthorized("Identifiants invalides");
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erreur lors de la connexion: {ex.Message}");
-            }
+            var token = _tokenService.GenerateToken(user);
+            return Ok(new { token });
         }
 
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterModel model)
         {
-            try
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+
+            var newUser = new User
             {
-                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                Username = model.Username,
+                Password = hashedPassword
+            };
 
-                var newUser = new User
-                {
-                    Username = model.Username,
-                    Password = hashedPassword
-                };
+            _context.Users.Add(newUser);
+            _context.SaveChanges();
 
-                _context.Users.Add(newUser);
-                _context.SaveChanges();
-
-                return Ok("Utilisateur créé");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erreur lors de l'inscription: {ex.Message}");
-            }
+            return Ok("Utilisateur créé");
         }
     }
 }

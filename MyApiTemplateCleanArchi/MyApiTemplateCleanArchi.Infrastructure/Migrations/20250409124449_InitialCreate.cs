@@ -27,7 +27,7 @@ namespace MyApiTemplateCleanArchi.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Password", "Username" },
-                values: new object[] { 1, "$2a$12$KIXG.h3A98J9eQH.Eu.rAeg6Q6lB7Ikr9I/FaI5xWbm/DbdU6Y0He\r\n", "admin" });
+                values: new object[] { 1, "admin", "admin" });
         }
 
         /// <inheritdoc />

@@ -24,7 +24,7 @@ namespace MyApiTemplateCleanArchi.Infrastructure.Persistence
             {
                 Id = 1,
                 Username = "admin",
-                Password = "$2a$12$KIXG.h3A98J9eQH.Eu.rAeg6Q6lB7Ikr9I/FaI5xWbm/DbdU6Y0He\r\n"
+                Password = "admin"
             });
         }
     }

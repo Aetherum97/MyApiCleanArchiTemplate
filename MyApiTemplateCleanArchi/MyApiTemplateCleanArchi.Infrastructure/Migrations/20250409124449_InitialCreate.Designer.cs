@@ -11,7 +11,7 @@ using MyApiTemplateCleanArchi.Infrastructure.Persistence;
 namespace MyApiTemplateCleanArchi.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250408084534_InitialCreate")]
+    [Migration("20250409124449_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -48,7 +48,7 @@ namespace MyApiTemplateCleanArchi.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Password = "$2a$12$KIXG.h3A98J9eQH.Eu.rAeg6Q6lB7Ikr9I/FaI5xWbm/DbdU6Y0He\r\n",
+                            Password = "admin",
                             Username = "admin"
                         });
                 });
