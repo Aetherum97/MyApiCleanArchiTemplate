@@ -54,5 +54,6 @@ namespace MyApiTemplateCleanArchi.Web.Controllers
 
             return Ok("Utilisateur créé");
         }
+
     }
 }
