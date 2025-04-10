@@ -17,6 +17,7 @@ RUN dotnet restore "MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Web/MyApiTem
 
 COPY . .
 
+COPY ["certs", "certs"]
 WORKDIR "/src/MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Web"
 
 RUN dotnet build "MyApiTemplateCleanArchi.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build

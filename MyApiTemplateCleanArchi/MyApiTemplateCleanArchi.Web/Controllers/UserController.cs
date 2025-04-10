@@ -12,7 +12,6 @@ namespace MyApiTemplateCleanArchi.Web.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-
         public UserController(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
