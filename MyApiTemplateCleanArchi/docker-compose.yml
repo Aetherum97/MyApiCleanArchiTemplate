@@ -19,7 +19,7 @@ services:
       - "5000:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=http://+:443
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=MyApiDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
       - Kestrel__Certificates__Default__Path=certs/httpscert.pfx
       - Kestrel__Certificates__Default__Password=YourCertPassword- 
