@@ -19,13 +19,11 @@ namespace MyApiTemplateCleanArchi.Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-
         public async Task AddAsync(User user)
         {
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
         }
-
 
         public async Task<User> GetByIdAsync(int id)
         {
@@ -36,7 +34,6 @@ namespace MyApiTemplateCleanArchi.Infrastructure.Persistence.Repositories
         {
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
-
 
         public async Task<PagedList<User>> GetAllUsersAsync(PaginationParameters parameters)
         {
