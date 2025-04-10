@@ -8,7 +8,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 COPY ["MyApiTemplateCleanArchi.sln", "."]
-COPY certs certs
+# COPY certs certs
 COPY ["MyApiTemplateCleanArchi.Application", "MyApiTemplateCleanArchi.Application"]
 COPY ["MyApiTemplateCleanArchi.Domain", "MyApiTemplateCleanArchi.Domain"]
 COPY ["MyApiTemplateCleanArchi.Infrastructure", "MyApiTemplateCleanArchi.Infrastructure"]
