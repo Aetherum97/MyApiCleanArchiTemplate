@@ -16,13 +16,11 @@ services:
       dockerfile: MyApiTemplateCleanArchi.Web/Dockerfile
     image: myapitemplatecleanarchi:web
     ports:
-      - "5000:443"
+      - "5000:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=MyApiDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
-      - Kestrel__Certificates__Default__Path=certs/httpscert.pfx
-      - Kestrel__Certificates__Default__Password=YourCertPassword
     depends_on:
       - sqlserver
 
