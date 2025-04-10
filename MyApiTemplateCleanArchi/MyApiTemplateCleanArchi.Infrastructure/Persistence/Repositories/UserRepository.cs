@@ -41,5 +41,6 @@ namespace MyApiTemplateCleanArchi.Infrastructure.Persistence.Repositories
             var query = _dbContext.Users.AsQueryable();
             return await PagedList<User>.CreateAsync(query, parameters.PageNumber, parameters.PageSize);
         }
+
     }
 }
