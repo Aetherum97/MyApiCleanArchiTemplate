@@ -22,7 +22,7 @@ services:
       - ASPNETCORE_URLS=https://+:443
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=MyApiDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
       - Kestrel__Certificates__Default__Path=certs/httpscert.pfx
-      - Kestrel__Certificates__Default__Password=YourCertPassword- 
+      - Kestrel__Certificates__Default__Password=YourCertPassword
     depends_on:
       - sqlserver
 
