@@ -20,5 +20,6 @@ namespace MyApiTemplateCleanArchi.Application.MappingProfiles
             CreateMap(typeof(PagedList<>), typeof(PagedList<>))
                 .ConvertUsing(typeof(PagedListConverter<,>));
         }
+
     }
 }
