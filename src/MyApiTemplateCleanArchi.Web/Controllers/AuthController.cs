@@ -14,7 +14,6 @@ namespace MyApiTemplateCleanArchi.Web.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _context;
         private readonly ITokenService _tokenService;

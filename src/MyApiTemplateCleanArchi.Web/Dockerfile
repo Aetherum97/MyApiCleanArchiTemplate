@@ -27,5 +27,5 @@ RUN dotnet publish "MyApiTemplateCleanArchi.Web.csproj" -c $BUILD_CONFIGURATION 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY --from=build /src/certs certs
+# COPY --from=build /src/certs certs
 ENTRYPOINT ["dotnet", "MyApiTemplateCleanArchi.Web.dll"]
