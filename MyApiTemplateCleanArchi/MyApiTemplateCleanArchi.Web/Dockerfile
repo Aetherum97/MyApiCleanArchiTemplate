@@ -7,14 +7,14 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-COPY MyApiTemplateCleanArchi.sln ./
-COPY MyApiTemplateCleanArchi.Application MyApiTemplateCleanArchi.Application
-COPY MyApiTemplateCleanArchi.Domain MyApiTemplateCleanArchi.Domain
-COPY MyApiTemplateCleanArchi.Infrastructure MyApiTemplateCleanArchi.Infrastructure
-COPY MyApiTemplateCleanArchi.Shared MyApiTemplateCleanArchi.Shared
-COPY MyApiTemplateCleanArchi.Web MyApiTemplateCleanArchi.Web
+COPY ["MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.sln", "MyApiTemplateCleanArchi.sln"]
+COPY ["MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Application/MyApiTemplateCleanArchi.Application.csproj", "MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Application/"]
+COPY ["MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Domain/MyApiTemplateCleanArchi.Domain.csproj", "MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Domain/"]
+COPY ["MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Infrastructure/MyApiTemplateCleanArchi.Infrastructure.csproj", "MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Infrastructure/"]
+COPY ["MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Shared/MyApiTemplateCleanArchi.Shared.csproj", "MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Shared/"]
+COPY ["MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Web/MyApiTemplateCleanArchi.Web.csproj", "MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Web/"]
 
-RUN dotnet restore "MyApiTemplateCleanArchi.Web/MyApiTemplateCleanArchi.Web.csproj"
+RUN dotnet restore "MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Web/MyApiTemplateCleanArchi.Web.csproj"
 
 COPY . .  
 
