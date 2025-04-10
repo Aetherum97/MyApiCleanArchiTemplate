@@ -30,6 +30,7 @@ namespace MyApiTemplateCleanArchi.Infrastructure.Persistence.Repositories
             return await _dbContext.Users.FindAsync(id);
         }
 
+
         public async Task<User> GetByUsernameAsync(string username)
         {
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
