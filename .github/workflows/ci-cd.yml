@@ -27,10 +27,10 @@ jobs:
         run: dotnet restore MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.sln
 
       - name: Build solution
-        run: dotnet build MyApiTemplateCleanArchi.sln --no-restore -c Release
+        run: dotnet build MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.sln --no-restore -c Release
 
       - name: Run tests
-        run: dotnet test MyApiTemplateCleanArchi.sln --no-restore -c Release
+        run: dotnet test MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.sln --no-restore -c Release
 
       - name: Publish web project
         run: dotnet publish MyApiTemplateCleanArchi.Web/MyApiTemplateCleanArchi.Web.csproj -c Release -o publish --no-restore
