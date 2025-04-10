@@ -18,7 +18,7 @@ RUN dotnet restore "MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Web/MyApiTem
 
 COPY . .  
 
-COPY ["MyApiTemplateCleanArchi/certs", "certs"]
+COPY ["certs", "certs"]
 
 WORKDIR "/src/MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Web"
 RUN dotnet build "MyApiTemplateCleanArchi.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
@@ -30,7 +30,6 @@ RUN dotnet publish "MyApiTemplateCleanArchi.Web.csproj" -c $BUILD_CONFIGURATION 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-
-COPY --from=build /src/certs certs
+COPY ["certs", "certs"]
 
 ENTRYPOINT ["dotnet", "MyApiTemplateCleanArchi.Web.dll"]
