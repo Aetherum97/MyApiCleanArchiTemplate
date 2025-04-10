@@ -23,25 +23,33 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Set working directory to src
+        run: cd src
+
       - name: Restore dependencies
-        run: dotnet restore MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.sln
+        working-directory: src
+        run: dotnet restore MyApiTemplateCleanArchi.sln
 
       - name: Build solution
-        run: dotnet build MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.sln --no-restore -c Release
+        working-directory: src
+        run: dotnet build MyApiTemplateCleanArchi.sln --no-restore -c Release
 
       - name: Run tests
-        run: dotnet test MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.sln --no-restore -c Release
+        working-directory: src
+        run: dotnet test MyApiTemplateCleanArchi.sln --no-restore -c Release
 
       - name: Publish web project
-        run: dotnet publish MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Web/MyApiTemplateCleanArchi.Web.csproj -c Release -o publish --no-restore
+        working-directory: src
+        run: dotnet publish MyApiTemplateCleanArchi.Web/MyApiTemplateCleanArchi.Web.csproj -c Release -o publish --no-restore
 
       - name: Build Docker image
-        run: docker build -f MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.Web/Dockerfile -t myapitemplatecleanarchi:web .
+        working-directory: src
+        run: docker build -f MyApiTemplateCleanArchi.Web/Dockerfile -t myapitemplatecleanarchi:web .
 
       - name: Run Docker container for testing
         run: |
           docker run --name testcontainer -d -p 5000:443 myapitemplatecleanarchi:web
           sleep 10
-          curl -v http://localhost:5000
+          curl -k https://localhost:5000
           docker stop testcontainer
           docker rm testcontainer
