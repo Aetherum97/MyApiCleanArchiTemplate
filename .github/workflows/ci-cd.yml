@@ -24,7 +24,7 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore MyApiTemplateCleanArchi.sln
+        run: dotnet restore MyApiTemplateCleanArchi/MyApiTemplateCleanArchi.sln
 
       - name: Build solution
         run: dotnet build MyApiTemplateCleanArchi.sln --no-restore -c Release
