@@ -12,6 +12,7 @@ namespace MyApiTemplateCleanArchi.Infrastructure.Persistence.Repositories
 {
     public class UserRepository : IUserRepository
     {
+
         private readonly ApplicationDbContext _dbContext;
 
         public UserRepository(ApplicationDbContext dbContext)
