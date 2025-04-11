@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyApiTemplateCleanArchi.Domain.Entities;
 using MyApiTemplateCleanArchi.Domain.Interfaces;
+using MyApiTemplateCleanArchi.Infrastructure.Commons.Bases;
 using MyApiTemplateCleanArchi.Shared.Commons.Pagination;
 using System;
 using System.Collections.Generic;
@@ -10,37 +11,21 @@ using System.Threading.Tasks;
 
 namespace MyApiTemplateCleanArchi.Infrastructure.Persistence.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : BaseRepository<User>, IUserRepository
     {
-
-        private readonly ApplicationDbContext _dbContext;
-
-        public UserRepository(ApplicationDbContext dbContext)
+        public UserRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
-        }
-
-        public async Task AddAsync(User user)
-        {
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task<User> GetByIdAsync(int id)
-        {
-            return await _dbContext.Users.FindAsync(id);
         }
 
         public async Task<User> GetByUsernameAsync(string username)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+            return await _dbSet.FirstOrDefaultAsync(u => u.Username == username) ?? throw new Exception("User not found");
         }
 
         public async Task<PagedList<User>> GetAllUsersAsync(PaginationParameters parameters)
         {
-            var query = _dbContext.Users.AsQueryable();
+            var query = _dbSet.AsQueryable();
             return await PagedList<User>.CreateAsync(query, parameters.PageNumber, parameters.PageSize);
         }
-
     }
 }

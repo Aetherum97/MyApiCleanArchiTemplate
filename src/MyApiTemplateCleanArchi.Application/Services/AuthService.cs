@@ -17,11 +17,13 @@ namespace MyApiTemplateCleanArchi.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
+        private readonly ITokenService _tokenService;
 
-        public AuthService(IUserRepository userRepository, IConfiguration configuration)
+        public AuthService(IUserRepository userRepository, IConfiguration configuration, ITokenService tokenService)
         {
             _userRepository = userRepository;
             _configuration = configuration;
+            _tokenService = tokenService;
         }
 
         public async Task<string> LoginAsync(string username, string password)
@@ -32,28 +34,9 @@ namespace MyApiTemplateCleanArchi.Application.Services
                 throw new UnauthorizedAccessException("Identifiants invalides");
             }
 
-            return GenerateJwtToken(user);
+            return _tokenService.GenerateToken(user);
         }
-
-        private string GenerateJwtToken(User user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "DefaultSuperSecretKeyMustBeAtLeast32BytesLong");
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Username)
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
+        
     }
 }
 

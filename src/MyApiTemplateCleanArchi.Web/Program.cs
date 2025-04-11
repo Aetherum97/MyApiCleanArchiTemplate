@@ -4,8 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MyApiTemplateCleanArchi.Application.Services.Interfaces;
 using MyApiTemplateCleanArchi.Application.Services;
-using MyApiTemplateCleanArchi.Domain.Interfaces;
-using MyApiTemplateCleanArchi.Infrastructure.Persistence.Repositories;
 using MyApiTemplateCleanArchi.Infrastructure.Persistence;
 using Microsoft.OpenApi.Models;
 using MyApiTemplateCleanArchi.Web.Middlewares;
@@ -13,12 +11,14 @@ using Serilog.Events;
 using Serilog;
 using MyApiTemplateCleanArchi.Application.Modules.Interfaces;
 using MyApiTemplateCleanArchi.Application.Modules.Mediator;
-using MyApiTemplateCleanArchi.Application.DTOs;
 using MyApiTemplateCleanArchi.Application.Queries.GetUser;
-using MyApiTemplateCleanArchi.Application.Queries.GetAllUsers;
-using MyApiTemplateCleanArchi.Shared.Commons.Pagination;
+
+using MyApiTemplateCleanArchi.Infrastructure;
+using MyApiTemplateCleanArchi.Application;
+using MyApiTemplateCleanArchi.Domain.Interfaces;
+using MyApiTemplateCleanArchi.Infrastructure.Persistence.Repositories;
 using MyApiTemplateCleanArchi.Application.Commands.Auth;
-using MyApiTemplateCleanArchi.Application.DTOs.Auth;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,9 +36,14 @@ var connectionString = configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+// Add DbContext and repositories
+builder.Services.AddPersistenceInfrastructure(builder.Configuration);
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+
+// Add interfaces and implementations
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -59,13 +64,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IMediator, SimpleMediator>();
 
-// Register the command and query handlers
-builder.Services.AddTransient<IRequestHandler<GetUserQuery, UserDto>, GetUserQueryHandler>();
-builder.Services.AddTransient<IRequestHandler<GetAllUsersQuery, PagedList<UserDto>>, GetAllUsersQueryHandler>();
-
-// Register the authentication commands
-builder.Services.AddTransient<IRequestHandler<LoginCommand, AuthResponseDto>, LoginCommandHandler>();
-builder.Services.AddTransient<IRequestHandler<RegisterCommand, string>, RegisterCommandHandler>();
+// Add auto-implementation of handlers
+builder.Services.AddHandlersFromAssembly(typeof(GetUserQueryHandler).Assembly);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
