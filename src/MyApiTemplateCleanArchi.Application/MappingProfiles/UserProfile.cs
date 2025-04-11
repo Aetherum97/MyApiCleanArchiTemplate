@@ -15,7 +15,7 @@ namespace MyApiTemplateCleanArchi.Application.MappingProfiles
     {
         public UserProfile()
         {
-            CreateMap<User,UserDto>();
+            CreateMap<User, UserDto>();
 
             CreateMap(typeof(PagedList<>), typeof(PagedList<>))
                 .ConvertUsing(typeof(PagedListConverter<,>));

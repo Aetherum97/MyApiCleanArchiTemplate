@@ -11,6 +11,14 @@ using Microsoft.OpenApi.Models;
 using MyApiTemplateCleanArchi.Web.Middlewares;
 using Serilog.Events;
 using Serilog;
+using MyApiTemplateCleanArchi.Application.Modules.Interfaces;
+using MyApiTemplateCleanArchi.Application.Modules.Mediator;
+using MyApiTemplateCleanArchi.Application.DTOs;
+using MyApiTemplateCleanArchi.Application.Queries.GetUser;
+using MyApiTemplateCleanArchi.Application.Queries.GetAllUsers;
+using MyApiTemplateCleanArchi.Shared.Commons.Pagination;
+using MyApiTemplateCleanArchi.Application.Commands.Auth;
+using MyApiTemplateCleanArchi.Application.DTOs.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,7 +57,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IMediator, SimpleMediator>();
 
+// Register the command and query handlers
+builder.Services.AddTransient<IRequestHandler<GetUserQuery, UserDto>, GetUserQueryHandler>();
+builder.Services.AddTransient<IRequestHandler<GetAllUsersQuery, PagedList<UserDto>>, GetAllUsersQueryHandler>();
+
+// Register the authentication commands
+builder.Services.AddTransient<IRequestHandler<LoginCommand, AuthResponseDto>, LoginCommandHandler>();
+builder.Services.AddTransient<IRequestHandler<RegisterCommand, string>, RegisterCommandHandler>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

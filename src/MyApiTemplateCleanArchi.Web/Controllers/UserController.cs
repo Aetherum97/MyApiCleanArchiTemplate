@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using MyApiTemplateCleanArchi.Application.DTOs;
-using MyApiTemplateCleanArchi.Domain.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using MyApiTemplateCleanArchi.Application.Modules.Interfaces;
+using MyApiTemplateCleanArchi.Application.Queries.GetAllUsers;
+using MyApiTemplateCleanArchi.Application.Queries.GetUser;
 using MyApiTemplateCleanArchi.Shared.Commons.Pagination;
 
 namespace MyApiTemplateCleanArchi.Web.Controllers
@@ -10,32 +10,30 @@ namespace MyApiTemplateCleanArchi.Web.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
-        public UserController(IUserRepository userRepository, IMapper mapper)
+        private readonly IMediator _mediator;
+        public UserController(IMediator mediator)
         {
-            _userRepository = userRepository;
-            _mapper = mapper;
+            _mediator = mediator;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
-            {
+            var query = new GetUserQuery(id);
+            var result = await _mediator.Send(query);
+            if (result == null)
                 return NotFound();
-            }
-            var userDto = _mapper.Map<UserDto>(user);
-            return Ok(userDto);
+            return Ok(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] PaginationParameters parameters)
         {
-            var pagedUsers = await _userRepository.GetAllUsersAsync(parameters);
-            var userDtos = _mapper.Map<PagedList<UserDto>>(pagedUsers);
-            return Ok(userDtos);
+            var query = new GetAllUsersQuery(parameters);
+
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
         }
     }
 }

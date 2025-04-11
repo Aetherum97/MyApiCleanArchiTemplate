@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using MyApiTemplateCleanArchi.Application.Commands.Auth;
 using MyApiTemplateCleanArchi.Application.DTOs.Auth;
+using MyApiTemplateCleanArchi.Application.Modules.Interfaces;
 using MyApiTemplateCleanArchi.Application.Services.Interfaces;
 using MyApiTemplateCleanArchi.Domain.Entities;
 using MyApiTemplateCleanArchi.Infrastructure.Persistence;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace MyApiTemplateCleanArchi.Web.Controllers
 {
@@ -14,45 +17,31 @@ namespace MyApiTemplateCleanArchi.Web.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
+        private readonly IMediator _mediator;
 
-        private readonly IConfiguration _configuration;
-        private readonly ApplicationDbContext _context;
-        private readonly ITokenService _tokenService;
-
-        public AuthController(IConfiguration configuration, ApplicationDbContext context, ITokenService tokenService)
+        public AuthController(IMediator mediator)
         {
-            _configuration = configuration;
-            _context = context;
-            _tokenService = tokenService;
+            _mediator = mediator;
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginCommand command)
         {
-            var user = _context.Users.SingleOrDefault(u => u.Username == model.Username);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+            AuthResponseDto result = await _mediator.Send(command);
+
+            if (result == null)
             {
                 return Unauthorized("Identifiants invalides");
             }
-            var token = _tokenService.GenerateToken(user);
-            return Ok(new { token });
+
+            return Ok(result);
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterCommand command)
         {
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
-
-            var newUser = new User
-            {
-                Username = model.Username,
-                Password = hashedPassword
-            };
-
-            _context.Users.Add(newUser);
-            _context.SaveChanges();
-
-            return Ok("Utilisateur créé");
+            string message = await _mediator.Send(command);
+            return Ok(new { Message = message });
         }
 
     }
