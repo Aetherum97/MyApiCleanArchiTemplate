@@ -21,6 +21,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=MyApiDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
+      - Jwt__Key=${Jwt__Key}
+      - Jwt__Issuer=${Jwt__Issuer}
+      - Jwt__Audience=${Jwt__Audience} 
     depends_on:
       - sqlserver
 

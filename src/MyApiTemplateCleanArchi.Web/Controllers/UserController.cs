@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MyApiTemplateCleanArchi.Application.Modules.Interfaces;
 using MyApiTemplateCleanArchi.Application.Queries.GetAllUsers;
 using MyApiTemplateCleanArchi.Application.Queries.GetUser;
@@ -16,6 +17,7 @@ namespace MyApiTemplateCleanArchi.Web.Controllers
             _mediator = mediator;
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
@@ -26,6 +28,7 @@ namespace MyApiTemplateCleanArchi.Web.Controllers
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] PaginationParameters parameters)
         {
