@@ -45,7 +45,7 @@ namespace MyApiTemplateCleanArchi.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Password = "admin",
+                            Password = "$2a$11$9Q71RhHPREOXygBLId4HVOJ0LaexxUa8S9deJEIv6HisxmAX0CSVq",
                             Username = "admin"
                         });
                 });

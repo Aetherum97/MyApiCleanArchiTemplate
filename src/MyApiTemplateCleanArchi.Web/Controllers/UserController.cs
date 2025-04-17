@@ -7,6 +7,7 @@ using MyApiTemplateCleanArchi.Shared.Commons.Pagination;
 
 namespace MyApiTemplateCleanArchi.Web.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -17,7 +18,7 @@ namespace MyApiTemplateCleanArchi.Web.Controllers
             _mediator = mediator;
         }
 
-        [Authorize]
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
