@@ -6,27 +6,31 @@ using MyApiTemplateCleanArchi.Infrastructure.Commons.Interfaces.Repositories;
 using MyApiTemplateCleanArchi.Infrastructure.Persistence;
 using System.Reflection;
 
-namespace MyApiTemplateCleanArchi.Infrastructure
+namespace MyApiTemplateCleanArchi.Infrastructure.Services
 {
     public static class ServiceRegister
     {
         public static IServiceCollection RegisterRepositories(this IServiceCollection services)
         {
-            var assembly = Assembly.GetAssembly(typeof(BaseRepository<>));
+            var baseRepoType = typeof(BaseRepository<,>);
+            var assembly = baseRepoType.Assembly;
 
-            var repositoryTypes = assembly!.GetTypes()
-                .Where(t => t.IsClass && !t.IsAbstract)
-                .Where(t =>
-                    t.GetInterfaces().Any(i =>
-                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IBaseRepository<>)));
+            var implementations = assembly.GetTypes()
+            .Where(t => t.IsClass && !t.IsAbstract)
+            .Where(t => t.BaseType != null
+                     && t.BaseType.IsGenericType
+                     && t.BaseType.GetGenericTypeDefinition() == baseRepoType);
 
-            foreach (var implementation in repositoryTypes)
+            foreach (var impl in implementations)
             {
-                var interfaces = implementation.GetInterfaces()
-                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IBaseRepository<>));
-                foreach (var serviceType in interfaces)
+                var serviceInterface = impl.GetInterfaces()
+                    .FirstOrDefault(i =>
+                        i.IsGenericType &&
+                        i.GetGenericTypeDefinition() == typeof(IBaseRepository<>));
+
+                if (serviceInterface != null)
                 {
-                    services.AddScoped(serviceType, implementation);
+                    services.AddScoped(serviceInterface, impl);
                 }
             }
 
@@ -37,7 +41,7 @@ namespace MyApiTemplateCleanArchi.Infrastructure
         {
             
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                    options.UseSqlServer(configuration.GetConnectionString("ApplicationDbContext")));
             
 
             services.RegisterRepositories();

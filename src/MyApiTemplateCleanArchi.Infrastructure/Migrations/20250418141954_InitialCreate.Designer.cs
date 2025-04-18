@@ -11,7 +11,7 @@ using MyApiTemplateCleanArchi.Infrastructure.Persistence;
 namespace MyApiTemplateCleanArchi.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250417074157_InitialCreate")]
+    [Migration("20250418141954_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

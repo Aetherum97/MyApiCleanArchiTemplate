@@ -1,4 +1,17 @@
 services:
+    # PostgreSQL container
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER:  postgres
+      POSTGRES_PASSWORD: ${SA_PASSWORD}
+      POSTGRES_DB:       TodosDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+   # SQL Server container
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver
@@ -20,12 +33,15 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=MyApiDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
+      - ConnectionStrings__ApplicationDbContext=${ConnectionStrings__ApplicationDbContext}
+      - ConnectionStrings__TodoPostgreDbContext=${ConnectionStrings__TodoPostgreDbContext}
       - Jwt__Key=${Jwt__Key}
       - Jwt__Issuer=${Jwt__Issuer}
       - Jwt__Audience=${Jwt__Audience} 
     depends_on:
       - sqlserver
+      - postgres
 
 volumes:
   sqlserverdata:
+  pgdata:

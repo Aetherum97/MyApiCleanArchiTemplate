@@ -13,11 +13,11 @@ using MyApiTemplateCleanArchi.Application.Modules.Interfaces;
 using MyApiTemplateCleanArchi.Application.Modules.Mediator;
 using MyApiTemplateCleanArchi.Application.Queries.GetUser;
 
-using MyApiTemplateCleanArchi.Infrastructure;
+using MyApiTemplateCleanArchi.Infrastructure.Services;
 using MyApiTemplateCleanArchi.Application;
 using MyApiTemplateCleanArchi.Domain.Interfaces;
 using MyApiTemplateCleanArchi.Infrastructure.Persistence.Repositories;
-using MyApiTemplateCleanArchi.Application.Commands.Auth;
+using MyApiTemplateCleanArchi.Infrastructure.Persistence.DbContexts;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,10 +31,15 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 var configuration = builder.Configuration;
+// SQL Server
+var sqlConnStr = configuration.GetConnectionString("ApplicationDbContext");
+builder.Services.AddDbContext<ApplicationDbContext>(opts =>
+    opts.UseSqlServer(sqlConnStr));
 
-var connectionString = configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+//   – PostgreSQL
+var pgConnStr = configuration.GetConnectionString("TodoPostgreDbContext");
+builder.Services.AddDbContext<TodoPostgreDbContext>(opts =>
+    opts.UseNpgsql(pgConnStr));
 
 // Add DbContext and repositories
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
@@ -44,6 +49,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 // Add interfaces and implementations
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -96,11 +102,14 @@ builder.Host.UseSerilog();
 
 var app = builder.Build();
 
-// Automatically apply migrations on startup
+// Automatically apply migrations on startup, and databases
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+    var allContexts = scope.ServiceProvider.GetServices<DbContext>();
+    foreach (var db in allContexts)
+    {
+        db.Database.Migrate();
+    }
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();

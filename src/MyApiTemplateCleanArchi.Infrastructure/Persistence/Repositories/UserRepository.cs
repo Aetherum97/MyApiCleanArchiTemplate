@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MyApiTemplateCleanArchi.Infrastructure.Persistence.Repositories
 {
-    public class UserRepository : BaseRepository<User>, IUserRepository
+    public class UserRepository : BaseRepository<User, ApplicationDbContext>, IUserRepository
     {
         public UserRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
